@@ -29,6 +29,7 @@ function App() {
 
     const [filter, setFilter] = useState<FilterValuesTupe>('all')
     const changeFilter = (filter: FilterValuesTupe) => {setFilter(filter)}
+    
     const getFiltredTasksForRender = (tasks: Array<TasksType>, filter: FilterValuesTupe): Array<TasksType> => {
       
       if(filter === 'active') {
@@ -49,14 +50,21 @@ function App() {
       }
       setTasks([newTask, ...tasks])
     }
+
+    const changeTaskStatus = (taskId: string, isDone: boolean) => {
+      setTasks(tasks.map(t => t.id === taskId ? {...t, isDone: isDone} : t))
+    }
+
     return (
       <div className="App">
-        <TodoLIst 
-        title={todoListTitle_1} 
-        tasks={filterTasksForRender} 
-        removeTask={removeTask} 
-        changeFilter={changeFilter}
-        addTask={addTask}
+        <TodoLIst
+          title={todoListTitle_1}
+          tasks={filterTasksForRender}
+          removeTask={removeTask}
+          changeFilter={changeFilter}
+          addTask={addTask}
+          changeTaskStatus={changeTaskStatus}
+          filter={filter}
         />
         {/* <TodoLIst title={todoLisTitle_2} tasks={tasks_2} /> */}
       </div>
