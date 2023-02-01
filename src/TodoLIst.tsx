@@ -2,13 +2,16 @@ import React, {KeyboardEvent, ChangeEvent, useState } from "react";
 import { FilterValuesTupe } from "./App";
 
 type TodoListPoropType = {
+  todoListId: string
   title: string;
-  filter: FilterValuesTupe
+  filter: FilterValuesTupe;
   tasks: Array<TasksType>;
-  removeTask: (taskId: string) => void;
-  changeFilter: (filter: FilterValuesTupe) => void;
-  addTask: (title: string) => void;
-  changeTaskStatus: (taskId: string, isDone: boolean) => void
+
+  removeTask: (taskId: string, todoListId: string) => void;
+  changeFilter: (filter: FilterValuesTupe, todoListId: string) => void;
+  addTask: (title: string, todoListId: string) => void;
+  changeTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void;
+  removeTodoList: (todoListId: string) => void
 };
 
 
@@ -27,8 +30,13 @@ const TodoLIst: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
         tasksList = <span>Your task list is empty</span>;
     } else {
         tasksList = props.tasks.map((task: TasksType) => {
-            let removeTask = () => props.removeTask(task.id);
-            const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(task.id, e.currentTarget.checked)
+            let removeTask = () => props.removeTask(task.id, props.todoListId);
+            const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) =>
+              props.changeTaskStatus(
+                task.id,
+                e.currentTarget.checked,
+                props.todoListId
+              );
             return (
               <li key={task.id} className={task.isDone && 'task_done' || 'task'}>
                 <input
@@ -46,7 +54,7 @@ const TodoLIst: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
     
     const addTask = () => {
       if (title.trim() !== "") {
-        props.addTask(title)
+        props.addTask(title, props.todoListId);
       } else {
         setError(true)
         
@@ -67,13 +75,18 @@ const TodoLIst: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
     // const onClickHandlerActive = () => props.changeFilter("active");
     // const onClickHandlerComplited = () => props.changeFilter("completed")
 
-    const handlerCreater = (filter: FilterValuesTupe) => () => props.changeFilter(filter)
+    const handlerCreater = (filter: FilterValuesTupe) => () => props.changeFilter(filter, props.todoListId);
+
+    const onClickRemoveTodoListHandler = () => props.removeTodoList(props.todoListId)
 
     const errorMessages = error && <div style={{color: 'red'}}>Title is required</div>
     const inputErrorClass = error ? "error" : ""
     return (
       <div>
-        <h3>{props.title}</h3>
+        <h3>
+          {props.title}
+          <button onClick={onClickRemoveTodoListHandler}>X</button>  
+        </h3>
         <div>
           <input
             className={inputErrorClass}
