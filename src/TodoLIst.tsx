@@ -1,7 +1,10 @@
+import { Box, Button, Grid, IconButton } from "@mui/material";
 import React, {KeyboardEvent, ChangeEvent, useState } from "react";
 import AddItemForm from "./AddItemForm";
 import { FilterValuesTupe } from "./App";
 import EdittableSpan from "./EdittableSpan";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { Checkbox } from "@material-ui/core";
 
 type TodoListPoropType = {
   todoListId: string
@@ -44,16 +47,17 @@ const TodoLIst: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
               props.changeTaskTitle(task.id, title, props.todoListId)
             }
             return (
-              <li key={task.id} className={task.isDone && 'task_done' || 'task'}>
-                <input
+              <div key={task.id} className={task.isDone && 'task_done' || 'task'}>
+                <Checkbox
                   onChange={changeTaskStatus}
-                  type="checkbox"
                   checked={task.isDone}
                 />
                 {/* <span>{task.title}</span> */}
                 <EdittableSpan title={task.title} changeTitle={changeTaskTitle}/>
-                <button onClick={removeTask}>x</button>
-              </li>
+                <IconButton aria-label="delete-task" onClick={removeTask}>
+                  <DeleteOutlineIcon/>
+                </IconButton>
+              </div>
             );
 
          })
@@ -77,32 +81,40 @@ const TodoLIst: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
 
     return (
       <div>
-        <h3>
-          <EdittableSpan title={props.title} changeTitle={changeTodoLIstTitle}/>
-          <button onClick={onClickRemoveTodoListHandler}>X</button>
+        <h3 style={{ textAlign: "center" }}>
+          <EdittableSpan
+            title={props.title}
+            changeTitle={changeTodoLIstTitle}
+          />
+          <Button onClick={onClickRemoveTodoListHandler}>
+            <DeleteOutlineIcon />
+          </Button>
         </h3>
 
         <AddItemForm addItem={addTask} />
-        <ul>{tasksList}</ul>
+        <ul style={{paddingLeft: "0px"}}>{tasksList}</ul>
         <div>
-          <button
-            className={props.filter === "all" ? "active_btn" : ""}
+          <Button
+            variant={props.filter === "all" ? "contained" : "text"}
+            color={"inherit"}
             onClick={handlerCreater("all")}
           >
             All
-          </button>
-          <button
-            className={props.filter === "active" ? "active_btn" : ""}
+          </Button>
+          <Button
+            variant={props.filter === "active" ? "contained" : "text"}
+            color={"primary"}
             onClick={handlerCreater("active")}
           >
             Active
-          </button>
-          <button
-            className={props.filter === "completed" ? "active_btn" : ""}
+          </Button>
+          <Button
+            variant={props.filter === "completed" ? "contained" : "text"}
+            color={"secondary"}
             onClick={handlerCreater("completed")}
           >
             Completed
-          </button>
+          </Button>
         </div>
       </div>
     );

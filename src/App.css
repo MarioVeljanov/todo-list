@@ -1,18 +1,17 @@
-.App {
-  padding: 30px;
-  display: flex;
-}
 
-.App > div {
-  margin-right: 50px;
-}
 
 .task_done { 
+  width: 250px;
+  white-space: break-spaces;
+  overflow-wrap: break-word;
   text-decoration: line-through;
   opacity: 0.7;
 }
 
 .task {
+  width: 250px;
+  white-space: break-spaces;
+  overflow-wrap: break-word;
   font-weight: 700;
 }
 
@@ -27,9 +26,14 @@
 }
 
 .error {
+  margin-right: 10px;
   border: 2px solid red;
+  color: rgb(206, 45, 34)
+
 }
+
+
 .addItemForm {
-  border: 1px solid black;
-  padding: 30px;
+  display: flex;
+  align-items:flex-end;
 }

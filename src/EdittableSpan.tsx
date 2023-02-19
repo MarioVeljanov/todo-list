@@ -1,3 +1,4 @@
+import { Input, TextField } from '@mui/material';
 import React, { ChangeEvent, FC, useState } from 'react';
 
 type EdittableSpanType = {
@@ -20,10 +21,17 @@ const EdittableSpan: FC<EdittableSpanType> = (props) => {
  
       };
 
-    return (
-        editMode
-        ? <input autoFocus onBlur={offEditMode} value={title} onChange={onChangeHandler}/>
-        : <span onDoubleClick={onEditMode} >{props.title} </span>
+    return editMode ? (
+      <Input
+        id="standard-basic"
+        size={'small'}
+        autoFocus
+        onBlur={offEditMode}
+        value={title}
+        onChange={onChangeHandler}
+      />
+    ) : (
+      <span onDoubleClick={onEditMode}>{props.title} </span>
     );
 };
 

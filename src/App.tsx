@@ -1,3 +1,5 @@
+import { Grid, Paper } from '@mui/material';
+import { Container } from '@mui/system';
 import React, { useState } from 'react';
 import { v1 } from 'uuid';
 import AddItemForm from './AddItemForm';
@@ -129,30 +131,67 @@ function App() {
     const todoListItems = todoLists.map(tl => {
       const filterTasksForRender = getFiltredTasksForRender(tasks[tl.id], tl.filter);
       return (
-        <TodoLIst
-          key={tl.id}
-          todoListId={tl.id}
-          title={tl.title}
-          tasks={filterTasksForRender}
-          removeTask={removeTask}
-          changeFilter={changeFilter}
-          addTask={addTask}
-          changeTaskStatus={changeTaskStatus}
-          filter={tl.filter}
-          removeTodoList={removeTodoList}
-          changeTaskTitle={changeTaskTitle}
-          changeFilterTitle={changeFilterTitle}
-        />
+        <Grid item >
+          <Paper style={{ padding: "20px" }}>
+            <TodoLIst
+              key={tl.id}
+              todoListId={tl.id}
+              title={tl.title}
+              tasks={filterTasksForRender}
+              removeTask={removeTask}
+              changeFilter={changeFilter}
+              addTask={addTask}
+              changeTaskStatus={changeTaskStatus}
+              filter={tl.filter}
+              removeTodoList={removeTodoList}
+              changeTaskTitle={changeTaskTitle}
+              changeFilterTitle={changeFilterTitle}
+            />
+          </Paper>
+        </Grid>
       );
     })
 
     return (
       <div className="App">
-        <AddItemForm addItem={addTodolist} />
-        {todoListItems}
+        <Container fixed>
+          <Grid container>
+            <div>
+              <AddItemForm addItem={addTodolist} />
+            </div>
+          </Grid>
+
+          <Grid container spacing={10} style={{ margin: "20px"}}>
+            {todoListItems}
+          </Grid>
+        </Container>
       </div>
     );
 }
 
 
 export default App;
+
+
+
+
+/* 
+  <AppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{mr: 2}}
+                    >
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        TodoLists
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+
+*/

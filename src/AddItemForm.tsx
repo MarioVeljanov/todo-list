@@ -1,4 +1,7 @@
+import { Button, IconButton } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import React, { ChangeEvent, useState, KeyboardEvent, useRef } from "react";
+import AddIcon from "@mui/icons-material/Add";
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -33,22 +36,31 @@ const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
   };
 
   const errorMessages = error && (
-    <div style={{ color: "red" }}>Title is required</div>
+    <div style={{ color: "rgb(206, 45, 34)" }}>Title is required</div>
   );
   const inputErrorClass = error ? "error" : "";
 
   return (
-    <div className="addItemForm">
-      <input
-        // ref={title2}
-        className={inputErrorClass}
-        value={title}
-        onChange={onChangeHandler}
-        onKeyDown={onKeyDownHandler}
-      />
-      <button onClick={addItem}>+</button>
+    <>
+      <div className="addItemForm">
+        <TextField
+          id="standard-basic"
+          variant="standard"
+          label={"Type value"}
+          error={!!error}
+          // helperText={error && "Title is requred"}
+          // ref={title2}
+          className={inputErrorClass}
+          value={title}
+          onChange={onChangeHandler}
+          onKeyDown={onKeyDownHandler}
+        />
+        <IconButton onClick={addItem}>
+          <AddIcon/>
+        </IconButton>
+      </div>
       {errorMessages}
-    </div>
+    </>
   );
 };
 
