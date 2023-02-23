@@ -1,4 +1,4 @@
-import { Grid, Paper } from '@mui/material';
+import { AppBar, Button, Grid, IconButton, Menu, Paper, Toolbar, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import React, { useState } from 'react';
 import { v1 } from 'uuid';
@@ -10,14 +10,14 @@ import { TasksType } from './TodoLIst';
 export type FilterValuesTupe = 'all' | 'active' | 'completed'
 
 
-type TodoLIstType = {
+ export type TodoLIstType = {
   id: string
   title: string
   filter: FilterValuesTupe
   // tasks: TasksType[]
 }
 
-type TasksStateType = {
+export type TasksStateType = {
   [TodoLIstId: string]: TasksType[]
 }
 
@@ -42,9 +42,6 @@ function App() {
     ],
   });
 
-
-
-  /* ............................................................... */
 
 
     const addTodolist = (title: string) => {
@@ -154,6 +151,23 @@ function App() {
 
     return (
       <div className="App">
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <Menu open={false} />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              TodoLists
+            </Typography>
+            <Button color="inherit">Login</Button>
+          </Toolbar>
+        </AppBar>
         <Container fixed>
           <Grid container>
             <div>
@@ -161,7 +175,7 @@ function App() {
             </div>
           </Grid>
 
-          <Grid container spacing={10} style={{ margin: "20px"}}>
+          <Grid container spacing={10} style={{ margin: "20px" }}>
             {todoListItems}
           </Grid>
         </Container>
