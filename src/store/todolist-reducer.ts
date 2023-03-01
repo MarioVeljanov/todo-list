@@ -2,7 +2,7 @@ import { v1 } from "uuid";
 import { FilterValuesTupe, TodoLIstType } from "../App";
 
 
-type RemoveTodoListAT = {
+export type RemoveTodoListAT = {
     type: 'REMOVE-TODOLIST'
     payload: {
         todoListId: string
@@ -13,6 +13,7 @@ export type AddTodoListAt = {
     type: 'ADD-TODOLIST'
     payload: {
         title: string
+        todolistId: string
     }
 }
 
@@ -42,7 +43,7 @@ export const todolistReducer = (todolists: TodoLIstType[], action: ActionType): 
         case 'REMOVE-TODOLIST':
             return todolists.filter(tl => tl.id !== action.payload.todoListId)
         case 'ADD-TODOLIST':
-            const newTodo: TodoLIstType = {id: v1(), title: action.payload.title, filter: 'all'}
+            const newTodo: TodoLIstType = {id: action.payload.todolistId, title: action.payload.title, filter: 'all'}
             return [...todolists, newTodo]
         case 'CHANGE-TODOLIST-TITLE':
             return todolists.map((tl) =>
@@ -75,7 +76,8 @@ export const AddTodoListAC = (title: string): AddTodoListAt => {
     return {
         type: 'ADD-TODOLIST',
         payload: {
-            title: title
+            title: title,
+            todolistId: v1()
         }
     }       
 }
