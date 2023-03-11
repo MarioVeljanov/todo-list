@@ -1,5 +1,4 @@
 import { v1 } from "uuid";
-import { FilterValuesTupe, TodoLIstType } from "../App";
 
 
 export type RemoveTodoListAT = {
@@ -25,6 +24,8 @@ export type ChangeTodoListTitleAT = {
     }
 }
 
+type FilterValuesTupe = 'all' | 'active' | 'completed'
+
 export type ChangeTodoListFilterAT = {
     type: 'CHANGE-TODOLIST-FILTER'
     payload: {
@@ -33,32 +34,41 @@ export type ChangeTodoListFilterAT = {
     }
 }
 
+ export type TodoLIstType = {
+  id: string
+  title: string
+  filter: FilterValuesTupe
+  // tasks: TasksType[]
+}
 
-type ActionType = RemoveTodoListAT | AddTodoListAt | ChangeTodoListTitleAT | ChangeTodoListFilterAT
+
+export type ActionType = RemoveTodoListAT | AddTodoListAt | ChangeTodoListTitleAT | ChangeTodoListFilterAT
 
 
+const intialState: TodoLIstType[] = []
 
-export const todolistReducer = (todolists: TodoLIstType[], action: ActionType): TodoLIstType[] => {
+
+export const todolistReducer = (state: TodoLIstType[] = intialState, action: ActionType): TodoLIstType[] => {
     switch(action.type) {
         case 'REMOVE-TODOLIST':
-            return todolists.filter(tl => tl.id !== action.payload.todoListId)
+            return state.filter(tl => tl.id !== action.payload.todoListId)
         case 'ADD-TODOLIST':
             const newTodo: TodoLIstType = {id: action.payload.todolistId, title: action.payload.title, filter: 'all'}
-            return [...todolists, newTodo]
+            return [...state, newTodo]
         case 'CHANGE-TODOLIST-TITLE':
-            return todolists.map((tl) =>
+            return state.map((tl) =>
                 tl.id === action.payload.todoListId 
                     ? { ...tl, title: action.payload.title } 
                         : tl
             )
         case 'CHANGE-TODOLIST-FILTER':
-            return todolists.map((tl) =>
+            return state.map((tl) =>
                 tl.id === action.payload.todoListId 
                     ? { ...tl, filter: action.payload.filter } 
                         : tl
             )
         default:
-            return todolists
+            return [...state]
         }
  
 }

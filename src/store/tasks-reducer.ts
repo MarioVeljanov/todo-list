@@ -1,4 +1,3 @@
-import {TasksStateType} from '../App';
 import {v1} from 'uuid';
 import { act } from '@testing-library/react';
 import { AddTodoListAt, RemoveTodoListAT } from './todolist-reducer';
@@ -16,7 +15,19 @@ type ActionsType =
     | AddTodoListAt
     | RemoveTodoListAT
 
-export const tasksReducer = (state: TasksStateType, action: ActionsType) => {
+
+type TasksType = {
+    id: string;
+    title: string;
+    isDone: boolean;
+}
+
+export type TasksStateType = {
+    [TodoLIstId: string]: TasksType[]
+}
+const initialState: TasksStateType = {}
+
+export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
     switch (action.type) {
         case 'REMOVE-TASK':
             return {...state, [action.todolistId]: state[action.todolistId].filter(t => t.id !== action.taskId)}
@@ -39,7 +50,7 @@ export const tasksReducer = (state: TasksStateType, action: ActionsType) => {
             let {[action.payload.todoListId]: [], ...rest} = {...state}
             return rest
         default:
-            throw new Error("I don't understand this type")
+            return {...state}
     }
 }
 
