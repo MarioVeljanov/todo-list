@@ -1,12 +1,13 @@
 import { Input, TextField } from '@mui/material';
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useState } from 'react';
 
 type EdittableSpanType = {
     title: string
     changeTitle: (title: string) => void
 }
 
-const EdittableSpan: FC<EdittableSpanType> = (props) => {
+const EdittableSpan: FC<EdittableSpanType> = memo((props) => {
+  console.log('EditableSpan');
     let [title, setTitle] = useState<string>(props.title);
     const [editMode, setEditMode] = useState<boolean>(false)
 
@@ -33,6 +34,6 @@ const EdittableSpan: FC<EdittableSpanType> = (props) => {
     ) : (
       <span onDoubleClick={onEditMode}>{props.title} </span>
     );
-};
+});
 
 export default EdittableSpan;

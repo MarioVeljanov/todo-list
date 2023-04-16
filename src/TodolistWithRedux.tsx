@@ -1,15 +1,16 @@
-import { Box, Button, Grid, IconButton } from "@mui/material";
-import React, {KeyboardEvent, ChangeEvent, useState } from "react";
+import { IconButton } from "@mui/material";
+import React, { ChangeEvent, memo, useCallback, useMemo } from "react";
 import AddItemForm from "./AddItemForm";
 import { FilterValuesTupe } from "./App";
 import EdittableSpan from "./EdittableSpan";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { Checkbox } from "@material-ui/core";
+import { Button, Checkbox } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { AppRootType } from "./store/store";
 import { useDispatch } from "react-redux";
 import { addTaskAC, changeStatusAC, changeTaskTitlesAC, RemoveTaskAC } from "./store/tasks-reducer";
 import { ChangeTodoListFilterAC, ChangeTodoListTitleAC, RemoveTodoListAC } from "./store/todolist-reducer";
+import Task from "./Task";
 
 type TodoListPoropType = {
   todoListId: string
@@ -26,65 +27,73 @@ export type TasksType = {
     isDone: boolean;
 };
 
-const TodoListWithRedux: React.FC<TodoListPoropType> = (props: TodoListPoropType) => {
+const TodoListWithRedux: React.FC<TodoListPoropType> = memo((props: TodoListPoropType) => {
   let tasks = useSelector<AppRootType, TasksType[]>((state) => state.tasks[props.todoListId]);
+  const dispatch = useDispatch();
 
-  if (props.filter === "active") {
-    tasks = tasks.filter((tasks) => tasks.isDone === false);
-  }
+  const handlerCreaterAll = () => dispatch(ChangeTodoListFilterAC('all', props.todoListId));
+  const handlerCreaterActive = () => dispatch(ChangeTodoListFilterAC('active', props.todoListId));
+  const handlerCreaterCompleted = () => dispatch(ChangeTodoListFilterAC('completed', props.todoListId));
 
-  if (props.filter === "completed") {
-    tasks = tasks.filter((tasks) => tasks.isDone === true);
-  }
-
-  const dispatch = useDispatch()
-    let tasksList;
-    if(tasks.length === 0) {
-        tasksList = <span>Your task list is empty</span>;
-    } else {
-        tasksList = tasks.map((task: TasksType) => {
-            let removeTask = () => dispatch(RemoveTaskAC(task.id, props.todoListId));;
-            const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-              dispatch(changeStatusAC(task.id, e.currentTarget.checked, props.todoListId));
-            }
-
-            const changeTaskTitle = (title: string) => {
-              dispatch(changeTaskTitlesAC(task.id, title, props.todoListId));
-            }
-            return (
-              <div key={task.id} className={task.isDone && 'task_done' || 'task'}>
-                <Checkbox
-                  onChange={changeTaskStatus}
-                  checked={task.isDone}
-                />
-               
-                <EdittableSpan title={task.title} changeTitle={changeTaskTitle}/>
-                <IconButton aria-label="delete-task" onClick={removeTask}>
-                  <DeleteOutlineIcon/>
-                </IconButton>
-              </div>
-            );
-
-         })
+  useMemo(() => {
+    if (props.filter === "active") {
+      tasks = tasks.filter((tasks) => tasks.isDone === false);
     }
 
-    const handlerCreater = (filter: FilterValuesTupe) => () => dispatch(ChangeTodoListFilterAC(filter, props.todoListId));
+    if (props.filter === "completed") {
+      tasks = tasks.filter((tasks) => tasks.isDone === true);
+    }
+    return tasks
+  }, [props.filter, tasks])
 
+
+  let removeTask = useCallback((taskId: string) => dispatch(RemoveTaskAC(taskId, props.todoListId)), [props.todoListId]);
+  
+  const changeTaskStatus = useCallback((taskId: string, checked: boolean) => {
+    dispatch(changeStatusAC(taskId, checked, props.todoListId));
+  }, [props.todoListId]);
+
+  const changeTaskTitle = useCallback(
+    (taskId: string, title: string) => {
+      dispatch(changeTaskTitlesAC(taskId, title, props.todoListId));
+    },
+    [props.todoListId]
+  );
+
+  let tasksList;
+  if(tasks.length === 0) {
+      tasksList = <span>Your task list is empty</span>;
+  } else {
+      tasksList = tasks.map((task: TasksType) => {
+          return (
+            <Task
+              key={task.id}
+              task={task}
+              removeTask={removeTask}
+              changeTaskStatus={changeTaskStatus}
+              changeTaskTitle={changeTaskTitle}
+            />
+          );
+
+        })
+    }
+
+
+ 
     const onClickRemoveTodoListHandler = () => {
       let action = RemoveTodoListAC(props.todoListId);
       dispatch(action);
     }
 
-    const addTask = (title: string) => {
+    const addTask = useCallback((title: string) => {
          dispatch(addTaskAC(title, props.todoListId));
-    }
+    }, [dispatch])
 
 
 
-    const changeTodoLIstTitle = (title: string) => {
+    const changeTodoLIstTitle = useCallback((title: string) => {
       dispatch(ChangeTodoListTitleAC(title, props.todoListId));
-    }
-
+    }, [dispatch, props.todoListId])
 
 
     return (
@@ -100,33 +109,49 @@ const TodoListWithRedux: React.FC<TodoListPoropType> = (props: TodoListPoropType
         </h3>
 
         <AddItemForm addItem={addTask} />
-        <ul style={{paddingLeft: "0px"}}>{tasksList}</ul>
+        <ul style={{ paddingLeft: "0px" }}>{tasksList}</ul>
         <div>
-          <Button
+          <ButtonWithMemo
+            title="All"
+            color="inherit"
             variant={props.filter === "all" ? "contained" : "text"}
-            color={"inherit"}
-            onClick={handlerCreater("all")}
-          >
-            All
-          </Button>
-          <Button
+            onClick={handlerCreaterAll}
+          />
+
+          <ButtonWithMemo
+            title="Active"
+            color="primary"
             variant={props.filter === "active" ? "contained" : "text"}
-            color={"primary"}
-            onClick={handlerCreater("active")}
-          >
-            Active
-          </Button>
-          <Button
+            onClick={handlerCreaterActive}
+          />
+
+          <ButtonWithMemo
+            title="Completed"
+            color="secondary"
             variant={props.filter === "completed" ? "contained" : "text"}
-            color={"secondary"}
-            onClick={handlerCreater("completed")}
-          >
-            Completed
-          </Button>
+            onClick={handlerCreaterCompleted}
+          />
         </div>
       </div>
     );
-}
+})
 
 
 export default TodoListWithRedux;
+
+type ButtonWithMemoPropsType = {
+  title: string;
+  color: "inherit" | "primary" | "secondary" | "default";
+  variant: "text" | "outlined" | "contained";
+  onClick: () => void
+};
+
+const ButtonWithMemo = memo((props: ButtonWithMemoPropsType) => {
+  return <Button
+            variant={props.variant}
+            color={props.color}
+            onClick={props.onClick}
+          >
+            {props.title}
+  </Button>
+})

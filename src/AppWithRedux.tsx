@@ -1,6 +1,6 @@
 import { AppBar, Button, Grid, IconButton, Menu, Paper, Toolbar, Typography } from '@mui/material';
 import { Container } from '@mui/system';
-import React, { Reducer, useReducer, useState } from 'react';
+import React, { Reducer, useCallback, useReducer, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { v1 } from 'uuid';
@@ -35,10 +35,10 @@ function AppWithRedux() {
     const dispatch = useDispatch()
 
 
-    const addTodolist = (title: string) => {
+    const addTodolist = useCallback((title: string) => {
       let action = AddTodoListAC(title)
       dispatch(action);
-    }
+    }, [dispatch])
 
 
     const todoListItems = todolists.map((tl) => {
@@ -55,7 +55,7 @@ function AppWithRedux() {
           </Paper>
         </Grid>
       );
-    });
+    }); 
 
     return (
       <div className="App">
