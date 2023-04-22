@@ -4,7 +4,7 @@ import React, { ChangeEvent, useState, KeyboardEvent, useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { memo } from "react";
 
-type AddItemFormPropsType = {
+export type AddItemFormPropsType = {
     addItem: (title: string) => void
 }
 

@@ -1,15 +1,12 @@
 import { AppBar, Button, Grid, IconButton, Menu, Paper, Toolbar, Typography } from '@mui/material';
 import { Container } from '@mui/system';
-import React, { Reducer, useCallback, useReducer, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { v1 } from 'uuid';
 import AddItemForm from './AddItemForm';
 import './App.css';
 import { AppRootType } from './store/store';
-import { addTaskAC, changeStatusAC, changeTaskTitlesAC, RemoveTaskAC, tasksReducer } from './store/tasks-reducer';
-import { ActionType, AddTodoListAC, ChangeTodoListFilterAC, ChangeTodoListTitleAC, RemoveTodoListAC, todolistReducer } from './store/todolist-reducer';
-import TodoLIst from './TodoLIst';
+import { AddTodoListAC } from './store/todolist-reducer';
 import { TasksType } from './TodoLIst';
 import TodoListWithRedux from './TodolistWithRedux';
 

@@ -7,7 +7,6 @@ type EdittableSpanType = {
 }
 
 const EdittableSpan: FC<EdittableSpanType> = memo((props) => {
-  console.log('EditableSpan');
     let [title, setTitle] = useState<string>(props.title);
     const [editMode, setEditMode] = useState<boolean>(false)
 
